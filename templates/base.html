@@ -10,9 +10,6 @@
 
     <title>{% block title %}PlanMyValentine — Valentine's Week date plans and love letters{% endblock %}</title>
 
-    <script>
-        try { document.documentElement.setAttribute('data-bs-theme', localStorage.getItem('theme') || 'light'); } catch (e) {}
-    </script>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,7 +20,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Instrument+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -34,7 +31,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg site-nav">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'core:home' %}">PlanMyValentine</a>
+            <a class="navbar-brand" href="{% url 'core:home' %}"><i class="bi bi-heart-fill"></i>PlanMyValentine</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Menu">
                 <i class="bi bi-list"></i>
             </button>
@@ -81,11 +78,6 @@
                             <li><a class="dropdown-item more" href="{% url 'core:home' %}#cities">More cities</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <button id="themeToggle" class="icon-btn" type="button" title="Switch to dark mode" aria-label="Switch to dark mode">
-                            <i class="bi bi-moon"></i>
-                        </button>
-                    </li>
                     <li class="nav-item nav-cta">
                         <a class="btn btn-primary btn-sm" href="{% url 'planner:create' %}">Create plan</a>
                     </li>
@@ -115,7 +107,7 @@
     <footer class="footer">
         <div class="container">
             <strong>PlanMyValentine</strong>
-            <span>Date plans and love letters for Valentine's Week</span>
+            <span>Made with <i class="bi bi-heart-fill" aria-label="love"></i> for Valentine's Week</span>
         </div>
     </footer>
 

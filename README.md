@@ -2,7 +2,37 @@
 
 **Personalized Valentine's Week date plans and love letters, made in a few minutes.**
 
+![PlanMyValentine home page with a sample Valentine's Day plan and letter](docs/screenshots/home.png)
+
 PlanMyValentine turns a few thoughtful details into a date plan that feels like it belongs to two real people. Enter names, a city, a budget, a date, and a vibe. The app creates a practical plan you can share by link, plus an optional letter written from the same story.
+
+## A look at the product
+
+The screenshots below use sample names (Rohan and Ananya) and the built-in fallback content, so they show what the app produces without an OpenAI key.
+
+### 1. Tell it who, when, where and the vibe
+
+One form, four short sections: who the plan is for, which day of Valentine's Week, the city and budget, and the mood. An optional "Make it personal" section takes details about the person and your story.
+
+![Planner form with name fields, Valentine's Week day tiles, city, budget and vibe choices](docs/screenshots/form.png)
+
+### 2. Get a plan you can share
+
+The result page lays the day out from morning to night with places, costs and messages to send. From here the creator can copy the link, share on WhatsApp, print, write a matching love letter, or switch on confession mode to hide their name.
+
+![Result page showing a Valentine's Day plan for Bhubaneswar with share buttons](docs/screenshots/plan.png)
+
+### 3. Add a love letter
+
+A letter is written from the same details as the plan and can be copied or printed.
+
+![Love letter page addressed to Ananya with a Bhubaneswar postmark](docs/screenshots/letter.png)
+
+### 4. Browse Valentine's ideas by city
+
+Each city page has a romantic introduction, suggested spots and stays, a sample morning-to-night date, and a letter from the city, with a button to start a plan there.
+
+![City page for Puri with romantic spots](docs/screenshots/city.png)
 
 ## What is PlanMyValentine?
 
@@ -29,7 +59,7 @@ The experience is designed to be useful before the surprise and shareable after 
 - **Reactions** so recipients can respond to a shared plan.
 - **Personalized love letters** generated from the plan details.
 - **No account required** for creating or sharing a plan.
-- **Light and dark themes** with a responsive Bootstrap-based interface.
+- **A rose-pink Valentine theme** with a responsive Bootstrap-based interface.
 
 ## How it works
 
@@ -100,7 +130,7 @@ The city catalogue is maintained in [`core/prompts.py`](core/prompts.py). The ap
 - **python-dotenv** for environment variables
 - **Bootstrap 5** and Bootstrap Icons
 - **Server-rendered Django templates**
-- **Vanilla JavaScript** for theme switching, sharing, clipboard actions, form helpers, and city suggestions
+- **Vanilla JavaScript** for sharing, clipboard actions, form helpers, and city suggestions
 
 ## Run locally
 
@@ -188,6 +218,7 @@ Valentine/
 │   ├── forms.py         # Planner and reaction validation
 │   ├── views.py         # Create, share, react, letter, and anonymity flows
 │   ├── urls.py          # Planner routes
+│   ├── templatetags/    # render_plan filter that formats stored plan text safely
 │   └── migrations/      # Database migrations
 ├── planmyvalentine/
 │   ├── settings.py      # Django configuration
@@ -198,6 +229,7 @@ Valentine/
 ├── static/
 │   ├── css/style.css    # Visual design and responsive layout
 │   └── js/main.js       # Client-side interactions
+├── docs/screenshots/    # Images used in this README
 ├── manage.py
 ├── requirements.txt
 └── .env.example
@@ -241,7 +273,7 @@ Shared metadata, the default title, Open Graph title, and Open Graph description
 
 ### Adjust the visual style
 
-The layout and theme are in [`static/css/style.css`](static/css/style.css). Theme persistence and browser interactions are in [`static/js/main.js`](static/js/main.js).
+The layout and theme are in [`static/css/style.css`](static/css/style.css); colours, fonts and the heart pattern are defined as variables at the top of the file. Browser interactions are in [`static/js/main.js`](static/js/main.js).
 
 ### Tune generated content
 
