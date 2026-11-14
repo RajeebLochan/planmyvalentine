@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Valentine's Day in {{ city.display_name }} — PlanMyValentine{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="city-hero">
+    <div class="container">
+        <div class="city-hero-grid">
+            <div class="enter">
+                <h1 class="display">Valentine's Day in {{ city.display_name }}</h1>
+                <p class="tagline">{{ city.tagline }}</p>
+                <p class="lede">{{ city.romantic_desc }}</p>
+                <a href="{% url 'planner:create' %}" class="btn btn-primary btn-lg">
+                    Plan your date in {{ city.display_name }}
+                </a>
+            </div>
+            {% include '_postmark.html' with city=city.display_name date='14 Feb' large=True %}
+        </div>
+    </div>
+</section>
+
+<!-- Love story -->
+<section class="section">
+    <div class="container">
+        <div class="story">
+            <p class="eyebrow">Love story</p>
+            <h2 class="section-title">{{ experience.love_story_title }}</h2>
+            <p>{{ experience.love_story_text }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Valentine offer -->
+<section class="section pt-0">
+    <div class="container">
+        <div class="paper offer">
+            <div>
+                <h2>{{ experience.valentine_offer_title }}</h2>
+                <p>{{ experience.valentine_offer_text }}</p>
+            </div>
+            <a href="{% url 'planner:create' %}" class="btn btn-quiet">Create your plan</a>
+        </div>
+    </div>
+</section>
+
+<!-- Romantic spots -->
+<section class="section section-raised">
+    <div class="container">
+        <div class="section-head">
+            <p class="eyebrow">City romance</p>
+            <h2 class="section-title">Romantic spots in {{ city.display_name }}</h2>
+            <p class="lede">Places worth building a day around</p>
+        </div>
+        <div class="spot-list">
+            {% for spot in experience.romance_spots %}
+            <div class="spot">
+                <h3>{{ spot.name }}</h3>
+                <p>{{ spot.desc }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if city.hotels %}
+        <p class="stays">
+            <strong>Romantic stays</strong>{{ city.hotels|join:" · " }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Date plan -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <p class="eyebrow">Date plan</p>
+            <h2 class="section-title">A day for two in {{ city.display_name }}</h2>
+            <p class="lede">One way to spend Valentine's Day, morning to night</p>
+        </div>
+        <ol class="timeline">
+            {% for slot in experience.date_plan %}
+            <li>
+                <time>{{ slot.time }}</time>
+                <span>{{ slot.activity }}</span>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
+
+<!-- City love letter -->
+<section class="section section-raised">
+    <div class="container">
+        <div class="section-head">
+            <p class="eyebrow">Love letter</p>
+            <h2 class="section-title">A letter written in {{ city.display_name }}</h2>
+            <p class="lede">If {{ city.display_name }} could write you a love letter, it would say this</p>
+        </div>
+        <div class="paper city-letter">
+            {% include '_postmark.html' with city=city.display_name date='14 Feb' %}
+            <p>{{ experience.city_love_letter }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+<section class="closing-cta">
+    <div class="container">
+        <h2 class="display">Make it yours</h2>
+        <p class="lede">Turn this into a plan with your names, your budget and your vibe, set in {{ city.display_name }}</p>
+        <div class="hero-actions">
+            <a href="{% url 'planner:create' %}" class="btn btn-primary btn-lg">Start planning</a>
+            <a href="{% url 'core:home' %}#cities" class="text-link">
+                <i class="bi bi-arrow-left"></i>Explore other cities
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create your Valentine plan — PlanMyValentine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="narrow">
+
+        <!-- Header -->
+        <div class="page-head enter">
+            <h1 class="page-title" id="formTitle">
+                {% if relationship_type == 'crush' %}
+                    A plan for your crush
+                {% elif relationship_type == 'best_friend' %}
+                    A plan for your best friend
+                {% elif relationship_type == 'self_love' %}
+                    A Valentine's plan for yourself
+                {% else %}
+                    A plan for your valentine
+                {% endif %}
+            </h1>
+            <p class="lede" id="formSubtitle">
+                {% if relationship_type == 'self_love' %}
+                    You deserve a good day too. Tell us what it should look like
+                {% else %}
+                    Four short sections, then we write the plan
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" id="plannerForm">
+            {% csrf_token %}
+
+            <!-- Section 1: who -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <span class="form-section-number">1</span>
+                    <div>
+                        <h2 id="sectionWhoTitle">
+                            {% if relationship_type == 'self_love' %}About you{% else %}Who it is for{% endif %}
+                        </h2>
+                        <p id="sectionWhoDesc">
+                            {% if relationship_type == 'self_love' %}Your name and the kind of plan{% else %}Names and relationship{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-row-2col" id="namesRow">
+                    <div>
+                        <label for="{{ form.your_name.id_for_label }}" class="form-label">Your name</label>
+                        {{ form.your_name }}
+                        {% if form.your_name.errors %}
+                            <div class="field-error">{{ form.your_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div id="partnerNameField">
+                        <label for="{{ form.partner_name.id_for_label }}" class="form-label" id="partnerNameLabel">Their name</label>
+                        {{ form.partner_name }}
+                        {% if form.partner_name.errors %}
+                            <div class="field-error">{{ form.partner_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="field-gap">
+                    <label for="{{ form.relationship_type.id_for_label }}" class="form-label">Relationship</label>
+                    {{ form.relationship_type }}
+                    {% if form.relationship_type.errors %}
+                        <div class="field-error">{{ form.relationship_type.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section 2: when -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <span class="form-section-number">2</span>
+                    <div>
+                        <h2>Pick your date</h2>
+                        <p>One day of Valentine's Week, or the full week</p>
+                    </div>
+                </div>
+
+                <div class="choice-grid" id="planDateGrid">
+                    <div class="choice" id="opt_rose">
+                        <input type="radio" name="plan_type" id="plan_rose" value="Rose Day"
+                            {% if form.plan_type.value == 'Rose Day' %}checked{% endif %}>
+                        <label for="plan_rose">
+                            <span class="choice-meta">Feb 7</span>
+                            <span class="choice-name">Rose Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_propose">
+                        <input type="radio" name="plan_type" id="plan_propose" value="Propose Day"
+                            {% if form.plan_type.value == 'Propose Day' %}checked{% endif %}>
+                        <label for="plan_propose">
+                            <span class="choice-meta">Feb 8</span>
+                            <span class="choice-name">Propose Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_chocolate">
+                        <input type="radio" name="plan_type" id="plan_chocolate" value="Chocolate Day"
+                            {% if form.plan_type.value == 'Chocolate Day' %}checked{% endif %}>
+                        <label for="plan_chocolate">
+                            <span class="choice-meta">Feb 9</span>
+                            <span class="choice-name">Chocolate Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_teddy">
+                        <input type="radio" name="plan_type" id="plan_teddy" value="Teddy Day"
+                            {% if form.plan_type.value == 'Teddy Day' %}checked{% endif %}>
+                        <label for="plan_teddy">
+                            <span class="choice-meta">Feb 10</span>
+                            <span class="choice-name">Teddy Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_promise">
+                        <input type="radio" name="plan_type" id="plan_promise" value="Promise Day"
+                            {% if form.plan_type.value == 'Promise Day' %}checked{% endif %}>
+                        <label for="plan_promise">
+                            <span class="choice-meta">Feb 11</span>
+                            <span class="choice-name">Promise Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_hug">
+                        <input type="radio" name="plan_type" id="plan_hug" value="Hug Day"
+                            {% if form.plan_type.value == 'Hug Day' %}checked{% endif %}>
+                        <label for="plan_hug">
+                            <span class="choice-meta">Feb 12</span>
+                            <span class="choice-name">Hug Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_kiss">
+                        <input type="radio" name="plan_type" id="plan_kiss" value="Kiss Day"
+                            {% if form.plan_type.value == 'Kiss Day' %}checked{% endif %}>
+                        <label for="plan_kiss">
+                            <span class="choice-meta">Feb 13</span>
+                            <span class="choice-name">Kiss Day</span>
+                        </label>
+                    </div>
+                    <div class="choice" id="opt_valentine">
+                        <input type="radio" name="plan_type" id="plan_valentine" value="Valentine Day"
+                            {% if form.plan_type.value == 'Valentine Day' or not form.plan_type.value %}checked{% endif %}>
+                        <label for="plan_valentine">
+                            <span class="choice-meta">Feb 14</span>
+                            <span class="choice-name">Valentine's Day</span>
+                        </label>
+                    </div>
+                    <div class="choice choice-wide" id="opt_fullweek">
+                        <input type="radio" name="plan_type" id="plan_fullweek" value="Full Week"
+                            {% if form.plan_type.value == 'Full Week' %}checked{% endif %}>
+                        <label for="plan_fullweek">
+                            <span class="choice-name">Full Valentine's Week</span>
+                            <span class="choice-meta">Feb 7 to 14, all 8 days</span>
+                        </label>
+                    </div>
+                </div>
+                {% if form.plan_type.errors %}
+                    <div class="field-error">{{ form.plan_type.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Section 3: where and budget -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <span class="form-section-number">3</span>
+                    <div>
+                        <h2>Where and budget</h2>
+                        <p>Your city and spending limit</p>
+                    </div>
+                </div>
+
+                <div class="form-row-2col">
+                    <div>
+                        <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                        {{ form.city }}
+                        <div class="form-text">Any city works. Bigger ones get local tips</div>
+                        {% if form.city.errors %}
+                            <div class="field-error">{{ form.city.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.budget.id_for_label }}" class="form-label">Budget (₹)</label>
+                        {{ form.budget }}
+                        <div class="form-text" id="budgetHint">Most plans land between ₹2,000 and ₹5,000</div>
+                        {% if form.budget.errors %}
+                            <div class="field-error">{{ form.budget.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: vibe -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <span class="form-section-number">4</span>
+                    <div>
+                        <h2>Set the vibe</h2>
+                        <p id="vibeDesc">The mood the plan should have</p>
+                    </div>
+                </div>
+
+                <div class="choice-row" id="vibeGrid">
+                    <div class="choice">
+                        <input type="radio" name="vibe" id="vibe_romantic" value="romantic"
+                            {% if form.vibe.value == 'romantic' or not form.vibe.value %}checked{% endif %}>
+                        <label for="vibe_romantic"><span class="choice-name">Romantic</span></label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="vibe" id="vibe_funny" value="funny"
+                            {% if form.vibe.value == 'funny' %}checked{% endif %}>
+                        <label for="vibe_funny"><span class="choice-name">Funny</span></label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="vibe" id="vibe_crazy" value="crazy"
+                            {% if form.vibe.value == 'crazy' %}checked{% endif %}>
+                        <label for="vibe_crazy"><span class="choice-name">Crazy</span></label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="vibe" id="vibe_spiritual" value="spiritual"
+                            {% if form.vibe.value == 'spiritual' %}checked{% endif %}>
+                        <label for="vibe_spiritual"><span class="choice-name">Spiritual</span></label>
+                    </div>
+                    <div class="choice">
+                        <input type="radio" name="vibe" id="vibe_filmy" value="filmy"
+                            {% if form.vibe.value == 'filmy' %}checked{% endif %}>
+                        <label for="vibe_filmy"><span class="choice-name">Filmy</span></label>
+                    </div>
+                </div>
+                {% if form.vibe.errors %}
+                    <div class="field-error">{{ form.vibe.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Optional: personal details -->
+            <div class="form-section" id="personalizationSection">
+                <button type="button" class="disclosure" data-bs-toggle="collapse" data-bs-target="#personalizeCollapse" aria-expanded="false" aria-controls="personalizeCollapse">
+                    <span>
+                        <span class="disclosure-title">Make it personal</span>
+                        <span class="disclosure-hint" id="personalizeHint">Optional. The more we know, the more specific the plan</span>
+                    </span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+
+                <div class="collapse" id="personalizeCollapse">
+                    <div class="disclosure-body">
+                        <div id="aboutPartnerField">
+                            <label for="{{ form.about_partner.id_for_label }}" class="form-label" id="aboutPartnerLabel">About them</label>
+                            {{ form.about_partner }}
+                            <div class="form-text" id="aboutPartnerHint">Hobbies, favourite things, what makes them special</div>
+                        </div>
+
+                        <div id="aboutYourselfField">
+                            <label for="{{ form.about_yourself.id_for_label }}" class="form-label" id="aboutYourselfLabel">About you two</label>
+                            {{ form.about_yourself }}
+                            <div class="form-text" id="aboutYourselfHint">Your story together, memories, inside jokes</div>
+                        </div>
+
+                        <div>
+                            <label for="{{ form.special_request.id_for_label }}" class="form-label">Special requests</label>
+                            {{ form.special_request }}
+                            <div class="form-text">Specific ideas, dietary preferences, accessibility needs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-area">
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                    <span id="btnText">
+                        {% if relationship_type == 'self_love' %}Write my self-care plan{% else %}Write my plan{% endif %}
+                    </span>
+                    <span id="btnLoader" class="d-none">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Writing your plan
+                    </span>
+                </button>
+                <p class="submit-note">No login · Anonymous · Shareable by link</p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const relationshipSelect = document.getElementById('id_relationship_type');
+    const partnerNameField = document.getElementById('partnerNameField');
+    const partnerNameInput = document.getElementById('id_partner_name');
+    const aboutPartnerField = document.getElementById('aboutPartnerField');
+    const aboutPartnerLabel = document.getElementById('aboutPartnerLabel');
+    const aboutPartnerHint = document.getElementById('aboutPartnerHint');
+    const aboutYourselfLabel = document.getElementById('aboutYourselfLabel');
+    const aboutYourselfHint = document.getElementById('aboutYourselfHint');
+    const partnerNameLabel = document.getElementById('partnerNameLabel');
+    const formTitle = document.getElementById('formTitle');
+    const formSubtitle = document.getElementById('formSubtitle');
+    const sectionWhoTitle = document.getElementById('sectionWhoTitle');
+    const sectionWhoDesc = document.getElementById('sectionWhoDesc');
+    const btnText = document.getElementById('btnText');
+    const personalizeHint = document.getElementById('personalizeHint');
+    const budgetHint = document.getElementById('budgetHint');
+
+    // Date options that do not apply to self-love
+    const kissOpt = document.getElementById('opt_kiss');
+    const proposeOpt = document.getElementById('opt_propose');
+    const kissInput = document.getElementById('plan_kiss');
+    const proposeInput = document.getElementById('plan_propose');
+
+    const COPY = {
+        crush: {
+            title: 'A plan for your crush',
+            subtitle: 'Bold moves only. Four short sections, then we write the plan',
+            partnerName: 'Their name',
+            aboutPartner: 'About your crush',
+            aboutPartnerHint: 'Their personality, what you like about them, mutual friends',
+            aboutYourself: 'Your story so far',
+            aboutYourselfHint: 'How you know them, any hints they have dropped',
+            button: 'Write my plan'
+        },
+        best_friend: {
+            title: 'A plan for your best friend',
+            subtitle: 'Best friends get a Valentine\'s Week too',
+            partnerName: 'Their name',
+            aboutPartner: 'About your best friend',
+            aboutPartnerHint: 'Their personality, inside jokes, things you love doing together',
+            aboutYourself: 'Your friendship',
+            aboutYourselfHint: 'How you met, funniest memories, what makes it special',
+            button: 'Write our plan'
+        },
+        fallback: {
+            title: 'A plan for your valentine',
+            subtitle: 'Four short sections, then we write the plan',
+            partnerName: 'Their name',
+            aboutPartner: 'About them',
+            aboutPartnerHint: 'Hobbies, favourite things, what makes them special',
+            aboutYourself: 'About you two',
+            aboutYourselfHint: 'Your story together, memories, inside jokes',
+            button: 'Write my plan'
+        }
+    };
+
+    function updateFormForRelationship() {
+        const val = relationshipSelect.value;
+
+        if (val === 'self_love') {
+            partnerNameField.classList.add('hidden-field');
+            aboutPartnerField.classList.add('hidden-field');
+            partnerNameInput.removeAttribute('required');
+            // Default partner name so the form validates
+            if (!partnerNameInput.value || partnerNameInput.value.trim() === '') {
+                partnerNameInput.value = 'Me';
+            }
+
+            formTitle.textContent = 'A Valentine\'s plan for yourself';
+            formSubtitle.textContent = 'You deserve a good day too. Tell us what it should look like';
+            sectionWhoTitle.textContent = 'About you';
+            sectionWhoDesc.textContent = 'Your name and the kind of plan';
+            aboutYourselfLabel.textContent = 'About you';
+            aboutYourselfHint.textContent = 'Interests, hobbies, how you like to unwind, what makes you happy';
+            btnText.textContent = 'Write my self-care plan';
+            personalizeHint.textContent = 'Optional. Tell us what you love';
+            budgetHint.textContent = 'Most self-care plans land between ₹500 and ₹3,000';
+
+            if (kissOpt) kissOpt.style.display = 'none';
+            if (proposeOpt) proposeOpt.style.display = 'none';
+            if ((kissInput && kissInput.checked) || (proposeInput && proposeInput.checked)) {
+                document.getElementById('plan_valentine').checked = true;
+            }
+        } else {
+            partnerNameField.classList.remove('hidden-field');
+            aboutPartnerField.classList.remove('hidden-field');
+            partnerNameInput.setAttribute('required', 'true');
+            if (partnerNameInput.value === 'Me') partnerNameInput.value = '';
+
+            if (kissOpt) kissOpt.style.display = '';
+            if (proposeOpt) proposeOpt.style.display = '';
+
+            const copy = COPY[val] || COPY.fallback;
+            formTitle.textContent = copy.title;
+            formSubtitle.textContent = copy.subtitle;
+            partnerNameLabel.textContent = copy.partnerName;
+            aboutPartnerLabel.textContent = copy.aboutPartner;
+            aboutPartnerHint.textContent = copy.aboutPartnerHint;
+            aboutYourselfLabel.textContent = copy.aboutYourself;
+            aboutYourselfHint.textContent = copy.aboutYourselfHint;
+            btnText.textContent = copy.button;
+
+            sectionWhoTitle.textContent = 'Who it is for';
+            sectionWhoDesc.textContent = 'Names and relationship';
+            personalizeHint.textContent = 'Optional. The more we know, the more specific the plan';
+            budgetHint.textContent = 'Most plans land between ₹2,000 and ₹5,000';
+        }
+    }
+
+    updateFormForRelationship();
+    relationshipSelect.addEventListener('change', updateFormForRelationship);
+
+    // Loading state on submit
+    document.getElementById('plannerForm').addEventListener('submit', function() {
+        document.getElementById('btnText').classList.add('d-none');
+        document.getElementById('btnLoader').classList.remove('d-none');
+        document.getElementById('submitBtn').disabled = true;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static plan_format %}
+
+{% block title %}Your Valentine plan — PlanMyValentine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Header -->
+            <div class="page-head enter">
+                <h1 class="page-title">
+                    {% if plan.relationship_type == 'self_love' %}
+                        Your self-care plan is ready
+                    {% elif plan.is_anonymous %}
+                        Your anonymous plan is ready
+                    {% else %}
+                        Your plan is ready
+                    {% endif %}
+                </h1>
+                <p class="lede">
+                    {% if plan.is_anonymous %}
+                        Share it without your name and reveal yourself when you are ready
+                    {% elif plan.relationship_type == 'self_love' %}
+                        Written for {{ plan.your_name }}
+                    {% else %}
+                        Written for {{ plan.your_name }} and {{ plan.partner_name }}
+                    {% endif %}
+                </p>
+
+                <div class="plan-meta">
+                    <span><i class="bi bi-calendar3"></i>{{ plan.get_plan_type_display }}</span>
+                    <span><i class="bi bi-geo-alt"></i>{{ plan.city }}</span>
+                    <span><i class="bi bi-wallet2"></i>₹{{ plan.budget }}</span>
+                    <span><i class="bi bi-music-note"></i>{{ plan.get_vibe_display }}</span>
+                </div>
+            </div>
+
+            <!-- Share bar -->
+            <div class="share-bar sticky-top">
+                <span class="share-bar-label">Share this plan</span>
+                <div class="share-bar-actions">
+                    <button onclick="copyShareLink()" class="btn btn-primary btn-sm" id="copyBtn">
+                        <i class="bi bi-link-45deg"></i><span id="copyBtnText">Copy link</span>
+                    </button>
+                    <a href="https://wa.me/?text=Check%20out%20my%20Valentine%20plan%20{{ share_url|urlencode }}"
+                       target="_blank" rel="noopener"
+                       class="btn btn-quiet btn-sm">
+                        <i class="bi bi-whatsapp"></i>WhatsApp
+                    </a>
+                    <button onclick="shareNative()" class="btn btn-quiet btn-sm d-none" id="nativeShareBtn">
+                        <i class="bi bi-share"></i>Share
+                    </button>
+                    <button onclick="window.print()" class="btn btn-quiet btn-sm">
+                        <i class="bi bi-printer"></i>Print
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plan -->
+            <div class="paper plan-card">
+                <div class="plan-card-header">
+                    <div>
+                        <h2>
+                            {% if plan.relationship_type == 'self_love' %}
+                                {{ plan.get_plan_type_display }}, self-love edition
+                            {% else %}
+                                {{ plan.get_plan_type_display }} plan
+                            {% endif %}
+                        </h2>
+                        <p>{{ plan.view_count }} view{{ plan.view_count|pluralize }}</p>
+                    </div>
+                    {% include '_postmark.html' with city=plan.city date=plan.created_at|date:"j M" %}
+                </div>
+                <div class="plan-card-body">
+                    <div id="planContent" class="ai-generated-plan">
+                        {{ plan.plan_content|render_plan }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Creator actions -->
+            {% if is_creator %}
+            <div class="action-grid">
+                <div class="action-tile">
+                    <i class="bi bi-envelope"></i>
+                    <h3>
+                        {% if plan.relationship_type == 'self_love' %}
+                            A letter to yourself
+                        {% else %}
+                            A love letter
+                        {% endif %}
+                    </h3>
+                    <p>
+                        {% if plan.relationship_type == 'self_love' %}
+                            A written reminder of what you deserve
+                        {% else %}
+                            Written for {{ plan.partner_name }}, from the same details
+                        {% endif %}
+                    </p>
+                    {% if has_love_letter %}
+                        <a href="{% url 'planner:view_letter' plan.share_code %}" class="btn btn-quiet btn-sm">Read the letter</a>
+                    {% else %}
+                        <form method="post" action="{% url 'planner:generate_letter' plan.share_code %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-quiet btn-sm">Write the letter</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="action-tile">
+                    <i class="bi bi-incognito"></i>
+                    <h3>Confession mode</h3>
+                    <p>Send it without your name, reveal later</p>
+                    {% if plan.is_anonymous %}
+                        <form method="post" action="{% url 'planner:reveal_sender' plan.share_code %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-quiet btn-sm">Reveal my name</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'planner:make_anonymous' plan.share_code %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-quiet btn-sm">Go anonymous</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Reactions -->
+            <div class="reactions">
+                <h2>Reactions</h2>
+                <div class="reaction-chips">
+                    {% for reaction_type, count in reactions_count.items %}
+                        <span class="reaction-chip">
+                            {% include '_reaction_icon.html' with type=reaction_type %}
+                            <span class="count">{{ count }}</span>
+                        </span>
+                    {% empty %}
+                        <span>None yet. They show up here once someone opens your link</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="page-foot">
+                <span class="meta">
+                    <span>Created {{ plan.created_at|date:"M j, Y" }}</span>
+                    <span>{{ plan.view_count }} view{{ plan.view_count|pluralize }}</span>
+                </span>
+                <a href="{% url 'planner:create' %}" class="btn btn-quiet btn-sm">
+                    <i class="bi bi-plus-lg"></i>Create another plan
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="shareUrl" value="{{ share_url }}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyShareLink() {
+        const url = document.getElementById('shareUrl').value;
+        navigator.clipboard.writeText(url).then(() => {
+            const text = document.getElementById('copyBtnText');
+            text.textContent = 'Copied';
+            setTimeout(() => { text.textContent = 'Copy link'; }, 2000);
+        });
+    }
+
+    // Native share (mobile)
+    if (navigator.share) {
+        document.getElementById('nativeShareBtn').classList.remove('d-none');
+    }
+    function shareNative() {
+        navigator.share({
+            title: 'My Valentine plan',
+            text: 'Check out this Valentine plan I created',
+            url: document.getElementById('shareUrl').value,
+        }).catch(() => {});
+    }
+</script>
+{% endblock %}

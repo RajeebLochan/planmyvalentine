@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="enter">
+                <h1 class="display">A Valentine's Week plan, written for the two of you</h1>
+                <p class="lede">
+                    Give us two names, a city, a budget and a vibe. You get a day-by-day date plan
+                    and a love letter, ready to share by link.
+                </p>
+                <div class="hero-actions">
+                    <a href="{% url 'planner:create' %}" class="btn btn-primary btn-lg">Write my plan</a>
+                    <a href="#cities" class="btn btn-quiet btn-lg">Browse cities</a>
+                </div>
+            </div>
+
+            <!-- Sample of what the planner produces -->
+            <div class="sample enter enter-2" aria-label="Sample plan">
+                <div class="paper sample-plan">
+                    <div class="sample-head">
+                        <div>
+                            <h2>Valentine's Day for Ananya and Rohan</h2>
+                            <p>Bhubaneswar · ₹3,000 · Romantic</p>
+                        </div>
+                        {% include '_postmark.html' with city='Bhubaneswar' date='14 Feb' %}
+                    </div>
+                    <ul class="sample-stops">
+                        <li><time>7:30 am</time><span>Sunrise walk up the Dhauli steps, chai from the stall at the top</span></li>
+                        <li><time>1:00 pm</time><span>Lunch in Old Town, then handloom browsing at Ekamra Haat</span></li>
+                        <li><time>5:30 pm</time><span>Sunset by Bindu Sagar with the letter in your pocket</span></li>
+                        <li><time>8:00 pm</time><span>Dinner for two, a table by the window</span></li>
+                    </ul>
+                    <div class="sample-total">
+                        <span>Planned spend</span>
+                        <strong>₹2,850 of ₹3,000</strong>
+                    </div>
+                </div>
+                <div class="paper sample-letter">
+                    <b>Dear Ananya,</b>
+                    Years from now I still want to be the one walking you up those steps before the city wakes.
+                    <span>Rohan</span>
+                </div>
+                <p class="sample-caption">Sample plan</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Who it is for -->
+<section>
+    <div class="container">
+        <div class="kinds">
+            <a href="{% url 'planner:create' %}?type=girlfriend" class="kind">
+                <span class="kind-top"><i class="bi bi-heart"></i><i class="bi bi-arrow-right"></i></span>
+                <h3>For my valentine</h3>
+                <p>Romantic and sweet</p>
+            </a>
+            <a href="{% url 'planner:create' %}?type=crush" class="kind">
+                <span class="kind-top"><i class="bi bi-eye"></i><i class="bi bi-arrow-right"></i></span>
+                <h3>For my crush</h3>
+                <p>Bold and a little mysterious</p>
+            </a>
+            <a href="{% url 'planner:create' %}?type=best_friend" class="kind">
+                <span class="kind-top"><i class="bi bi-people"></i><i class="bi bi-arrow-right"></i></span>
+                <h3>For my friend</h3>
+                <p>Fun and wholesome</p>
+            </a>
+            <a href="{% url 'planner:create' %}?type=self_love" class="kind">
+                <span class="kind-top"><i class="bi bi-flower1"></i><i class="bi bi-arrow-right"></i></span>
+                <h3>For myself</h3>
+                <p>Because you deserve it too</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+    <div class="container">
+        <div class="split">
+            <div>
+                <h2 class="section-title">Why PlanMyValentine</h2>
+                <p class="lede mt-2">A plan built from your story, not a list of generic date ideas</p>
+            </div>
+            <ul class="feature-list">
+                <li>
+                    <i class="bi bi-pencil"></i>
+                    <div>
+                        <h3>Written from your story</h3>
+                        <p>Your names, city, budget and what you tell us about each other shape every stop</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="bi bi-unlock"></i>
+                    <div>
+                        <h3>No login</h3>
+                        <p>Fill in one form and the plan is yours to share</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="bi bi-layers"></i>
+                    <div>
+                        <h3>Four kinds of plan</h3>
+                        <p>For a partner, a crush, a best friend or yourself</p>
+                    </div>
+                </li>
+                <li>
+                    <i class="bi bi-send"></i>
+                    <div>
+                        <h3>Share anywhere</h3>
+                        <p>WhatsApp, a screenshot or a secret link</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="section section-raised">
+    <div class="container">
+        <div class="section-head">
+            <h2 class="section-title">How it works</h2>
+            <p class="lede">Three steps from a blank form to a plan you can send</p>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Fill in the form</h3>
+                <p>Names, budget, vibe and city</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Get your plan</h3>
+                <p>One day of Valentine's Week, or all eight</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Share and surprise</h3>
+                <p>Send it, screenshot it or keep it secret</p>
+            </div>
+        </div>
+
+        <a href="{% url 'planner:create' %}" class="btn btn-primary btn-lg">Write my plan</a>
+    </div>
+</section>
+
+<!-- Facts -->
+<section class="section">
+    <div class="container">
+        <div class="facts">
+            <div class="fact">
+                <div class="fact-figure">{{ cities|length }}</div>
+                <p>Cities with local suggestions</p>
+            </div>
+            <div class="fact">
+                <div class="fact-figure">8</div>
+                <p>Days of Valentine's Week, Feb 7 to 14</p>
+            </div>
+            <div class="fact">
+                <div class="fact-figure">₹0</div>
+                <p>Free and anonymous</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cities -->
+<section class="section section-raised" id="cities">
+    <div class="container">
+        <div class="section-head">
+            <h2 class="section-title">Valentine's by city</h2>
+            <p class="lede">Romantic spots, a sample day and a letter for each place</p>
+        </div>
+
+        <ul class="nav city-tabs" role="tablist">
+            <li role="presentation">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#odisha-cities" type="button" role="tab">
+                    Odisha <span class="count">{{ odisha_cities|length }}</span>
+                </button>
+            </li>
+            <li role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#metro-cities" type="button" role="tab">
+                    Metro cities <span class="count">{{ metro_cities|length }}</span>
+                </button>
+            </li>
+            <li role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#getaway-cities" type="button" role="tab">
+                    Romantic getaways <span class="count">{{ getaway_cities|length }}</span>
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="odisha-cities" role="tabpanel">
+                <div class="city-grid">
+                    {% for city in odisha_cities %}
+                    <a href="{% url 'core:city_landing' city.slug %}" class="city-card">
+                        <h3>{{ city.display_name }}</h3>
+                        <p>{{ city.tagline }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="metro-cities" role="tabpanel">
+                <div class="city-grid">
+                    {% for city in metro_cities %}
+                    <a href="{% url 'core:city_landing' city.slug %}" class="city-card">
+                        <h3>{{ city.display_name }}</h3>
+                        <p>{{ city.tagline }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="getaway-cities" role="tabpanel">
+                <div class="city-grid">
+                    {% for city in getaway_cities %}
+                    <a href="{% url 'core:city_landing' city.slug %}" class="city-card">
+                        <h3>{{ city.display_name }}</h3>
+                        <p>{{ city.tagline }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

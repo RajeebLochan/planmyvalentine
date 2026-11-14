@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static plan_format %}
+
+{% block title %}
+    {% if is_anonymous %}Someone's Valentine plan{% else %}{{ plan.your_name }}'s Valentine plan{% endif %} — PlanMyValentine
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Header -->
+            <div class="page-head enter">
+                {% if is_anonymous %}
+                    <h1 class="page-title">Someone planned something for you</h1>
+                    <p class="lede">A secret Valentine plan. Can you guess who sent it?</p>
+                {% elif plan.relationship_type == 'self_love' %}
+                    <h1 class="page-title">{{ plan.your_name }}'s self-love plan</h1>
+                    <p class="lede">A day they planned for themselves</p>
+                {% else %}
+                    <h1 class="page-title">{{ plan.your_name }}'s plan for {{ plan.partner_name }}</h1>
+                    <p class="lede">A Valentine plan written for the two of them</p>
+                {% endif %}
+
+                <div class="plan-meta">
+                    <span><i class="bi bi-calendar3"></i>{{ plan.get_plan_type_display }}</span>
+                    <span><i class="bi bi-geo-alt"></i>{{ plan.city }}</span>
+                    <span><i class="bi bi-music-note"></i>{{ plan.get_vibe_display }}</span>
+                </div>
+            </div>
+
+            <!-- Plan -->
+            <div class="paper plan-card">
+                <div class="plan-card-header">
+                    <div>
+                        <h2>
+                            {% if plan.relationship_type == 'self_love' %}
+                                {{ plan.get_plan_type_display }}, self-love edition
+                            {% else %}
+                                {{ plan.get_plan_type_display }} plan
+                            {% endif %}
+                        </h2>
+                    </div>
+                    {% include '_postmark.html' with city=plan.city date=plan.created_at|date:"j M" %}
+                </div>
+                <div class="plan-card-body">
+                    <div class="ai-generated-plan">
+                        {{ plan.plan_content|render_plan }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reactions -->
+            <div class="reactions">
+                <h2>How does this make you feel</h2>
+
+                <form method="post" action="{% url 'planner:add_reaction' plan.share_code %}">
+                    {% csrf_token %}
+                    <div class="choice-row">
+                        <div class="choice">
+                            <input type="radio" name="reaction_type" id="r_loved" value="loved">
+                            <label for="r_loved"><i class="bi bi-heart"></i><span class="choice-name">Loved it</span></label>
+                        </div>
+                        <div class="choice">
+                            <input type="radio" name="reaction_type" id="r_shocked" value="shocked">
+                            <label for="r_shocked"><i class="bi bi-emoji-surprise"></i><span class="choice-name">Shocked</span></label>
+                        </div>
+                        <div class="choice">
+                            <input type="radio" name="reaction_type" id="r_emotional" value="emotional">
+                            <label for="r_emotional"><i class="bi bi-emoji-smile"></i><span class="choice-name">Emotional</span></label>
+                        </div>
+                        <div class="choice">
+                            <input type="radio" name="reaction_type" id="r_laughing" value="laughing">
+                            <label for="r_laughing"><i class="bi bi-emoji-laughing"></i><span class="choice-name">Laughing</span></label>
+                        </div>
+                        <div class="choice">
+                            <input type="radio" name="reaction_type" id="r_crying" value="crying">
+                            <label for="r_crying"><i class="bi bi-emoji-tear"></i><span class="choice-name">Crying</span></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send reaction</button>
+                </form>
+
+                {% if reactions_count %}
+                <div class="reaction-chips">
+                    {% for reaction_type, count in reactions_count.items %}
+                        <span class="reaction-chip">
+                            {% include '_reaction_icon.html' with type=reaction_type %}
+                            <span class="count">{{ count }}</span>
+                        </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Pass it on -->
+            <div class="pass-on">
+                <h2>Pass it on</h2>
+                <div class="share-bar-actions">
+                    <a href="https://wa.me/?text=Check%20out%20this%20Valentine%20plan%20{{ share_url|urlencode }}"
+                       target="_blank" rel="noopener"
+                       class="btn btn-quiet btn-sm">
+                        <i class="bi bi-whatsapp"></i>WhatsApp
+                    </a>
+                    <button onclick="copyShareLink()" class="btn btn-quiet btn-sm" id="copyBtn">
+                        <i class="bi bi-link-45deg"></i><span id="copyBtnText">Copy link</span>
+                    </button>
+                    <button onclick="shareNative()" class="btn btn-quiet btn-sm d-none" id="nativeShareBtn">
+                        <i class="bi bi-share"></i>Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Create your own -->
+            <div class="page-foot">
+                <span>Want a plan of your own?</span>
+                <a href="{% url 'planner:create' %}" class="btn btn-primary">Write my plan</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="shareUrl" value="{{ share_url }}">
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyShareLink() {
+        const url = document.getElementById('shareUrl').value;
+        navigator.clipboard.writeText(url).then(() => {
+            const text = document.getElementById('copyBtnText');
+            text.textContent = 'Copied';
+            setTimeout(() => { text.textContent = 'Copy link'; }, 2000);
+        });
+    }
+
+    if (navigator.share) {
+        document.getElementById('nativeShareBtn').classList.remove('d-none');
+    }
+    function shareNative() {
+        navigator.share({
+            title: 'Valentine plan',
+            text: 'Check out this Valentine plan',
+            url: document.getElementById('shareUrl').value,
+        }).catch(() => {});
+    }
+</script>
+{% endblock %}

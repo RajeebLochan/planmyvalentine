@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Love letter — PlanMyValentine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <!-- Header -->
+            <div class="page-head enter">
+                <h1 class="page-title">Love letter</h1>
+                <p class="lede">From {{ letter.your_name }} to {{ letter.partner_name }}</p>
+            </div>
+
+            <!-- Letter -->
+            <div class="paper letter-sheet enter enter-2">
+                {% include '_postmark.html' with city=plan.city date=letter.created_at|date:"j M" %}
+                <div class="letter-dear">Dear {{ letter.partner_name }},</div>
+                <div class="letter-body">
+                    {{ letter.letter_content|linebreaks }}
+                </div>
+                <div class="letter-sign">
+                    <p class="closing">With all my love,</p>
+                    <p class="name">{{ letter.your_name }}</p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="letter-actions">
+                <button onclick="copyLetter()" class="btn btn-primary" id="copyLetterBtn">
+                    <i class="bi bi-copy"></i><span id="copyLetterText">Copy letter</span>
+                </button>
+                <button onclick="window.print()" class="btn btn-quiet">
+                    <i class="bi bi-printer"></i>Print
+                </button>
+                <a href="{% url 'planner:result' plan.share_code %}" class="btn btn-quiet">
+                    <i class="bi bi-arrow-left"></i>Back to plan
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{{ letter.your_name|json_script:"letterSender" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyLetter() {
+        const letterContent = document.querySelector('.letter-body').innerText;
+        const dear = document.querySelector('.letter-dear').innerText;
+        const sender = JSON.parse(document.getElementById('letterSender').textContent);
+        const full = dear + '\n\n' + letterContent + '\n\nWith all my love,\n' + sender;
+
+        navigator.clipboard.writeText(full).then(() => {
+            const text = document.getElementById('copyLetterText');
+            text.textContent = 'Copied';
+            setTimeout(() => { text.textContent = 'Copy letter'; }, 2000);
+        });
+    }
+</script>
+{% endblock %}
